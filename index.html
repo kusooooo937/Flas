@@ -3,40 +3,54 @@
 <head>
   <meta charset="utf-8">
   <title>Flash Player Site</title>
- <script src="ruffle/ruffle.js"></script>
-
+  <script src="ruffle/ruffle.js"></script>
   <style>
     body { background: #111; color: #fff; font-family: sans-serif; text-align:center; }
-    #flash-container { margin: 30px auto; width: 640px; height: 480px; }
+    #flash-container { margin: 30px auto; width: 640px; height: 480px; border: 1px solid #555; }
+    input { margin-top: 20px; }
   </style>
 </head>
 <body>
   <h1>Flash Player</h1>
 
-  <!-- ドラッグ＆ドロップでSWF読み込み可能 -->
-  <input type="file" id="fileInput" accept=".swf"><br><br>
+  <!-- ファイル入力（PCではここでSWF選択可能） -->
+  <input type="file" id="fileInput"><br><br>
 
   <div id="flash-container"></div>
 
   <script>
-  const ruffle = window.RufflePlayer.newest();
-  const player = ruffle.createPlayer();
-  document.getElementById("flash-container").appendChild(player);
+    const ruffle = window.RufflePlayer.newest();
+    const player = ruffle.createPlayer();
+    document.getElementById("flash-container").appendChild(player);
 
-  // ドラッグ&ドロップで SWF を読み込む
-  document.addEventListener("dragover", (e) => {
-    e.preventDefault();
-  });
+    // 直接URL指定でSWFを読み込む場合
+    // player.load("swf/mygame.swf");
 
-  document.addEventListener("drop", (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file && file.name.endsWith(".swf")) {
-      const url = URL.createObjectURL(file);
-      player.load(url);
-    } else {
-      alert("SWFファイルをドロップしてください");
-    }
+    // ドラッグ&ドロップ対応（iPadでもファイルが読める場合に対応）
+    document.addEventListener("dragover", (e) => e.preventDefault());
+    document.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if(file && file.name.endsWith(".swf")) {
+        const url = URL.createObjectURL(file);
+        player.load(url);
+      } else {
+        alert("SWFファイルをドロップしてください");
+      }
+    });
+
+    // ファイル選択で読み込む
+    document.getElementById("fileInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if(file && file.name.endsWith(".swf")) {
+        const url = URL.createObjectURL(file);
+        player.load(url);
+      }
+    });
+  </script>
+</body>
+</html>
+
   });
 </script>
 
