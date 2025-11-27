@@ -3,26 +3,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const player = ruffle.createPlayer();
   document.getElementById("flash-container").appendChild(player);
 
-  // 直接URL指定でSWFを読み込む場合
-  // player.load("swf/mygame.swf");
+  // --------------------------------------------------
+  // ① デフォルトSWFを起動
+  // --------------------------------------------------
+  player.load("swf/default.swf");
 
-  // ドラッグ&ドロップ対応
+  // --------------------------------------------------
+  // ② サイト内SWFを選んで起動
+  // --------------------------------------------------
+  document.getElementById("swfSelect").addEventListener("change", (e) => {
+    const swfPath = e.target.value;
+    player.load(swfPath);
+  });
+
+  // --------------------------------------------------
+  // ③ 自分のファイルを読み込む
+  // --------------------------------------------------
+  document.getElementById("fileInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file && file.name.endsWith(".swf")) {
+      const url = URL.createObjectURL(file);
+      player.load(url);
+    }
+  });
+
+  // --------------------------------------------------
+  // ④ ドラッグ＆ドロップ
+  // --------------------------------------------------
   document.addEventListener("dragover", (e) => e.preventDefault());
   document.addEventListener("drop", (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    if(file && file.name.endsWith(".swf")) {
-      const url = URL.createObjectURL(file);
-      player.load(url);
-    } else {
-      alert("SWFファイルをドロップしてください");
-    }
-  });
-
-  // ファイル選択で読み込む
-  document.getElementById("fileInput").addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if(file && file.name.endsWith(".swf")) {
+    if (file && file.name.endsWith(".swf")) {
       const url = URL.createObjectURL(file);
       player.load(url);
     }
