@@ -18,20 +18,26 @@
   <div id="flash-container"></div>
 
   <script>
-    const ruffle = window.RufflePlayer.newest();
-    const player = ruffle.createPlayer();
-    document.getElementById("flash-container").appendChild(player);
+  const ruffle = window.RufflePlayer.newest();
+  const player = ruffle.createPlayer();
+  document.getElementById("flash-container").appendChild(player);
 
-    // 手動でSWF指定したい場合 → player.load("yourfile.swf");
+  // ドラッグ&ドロップで SWF を読み込む
+  document.addEventListener("dragover", (e) => {
+    e.preventDefault();
+  });
 
-    // ファイル選択でSWF読み込み
-    document.getElementById("fileInput").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const url = URL.createObjectURL(file);
-        player.load(url);
-      }
-    });
-  </script>
+  document.addEventListener("drop", (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.name.endsWith(".swf")) {
+      const url = URL.createObjectURL(file);
+      player.load(url);
+    } else {
+      alert("SWFファイルをドロップしてください");
+    }
+  });
+</script>
+
 </body>
 </html>
